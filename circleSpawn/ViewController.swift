@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     
     var orginalCircleCenter: CGPoint!
+    var firstLocationAfterLongPress: CGPoint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,11 +50,11 @@ class ViewController: UIViewController {
         
         switch gesture.state {
         case .began:
-            orginalCircleCenter = pressedView.center
             pressedView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             pressedView.alpha = 0.5
         case .changed:
-            pressedView.center = location
+            firstLocationAfterLongPress = location
+            pressedView.center = firstLocationAfterLongPress != location ? avoidCircleMovingIfNoChangeLocation(original: orginalCircleCenter, new: location) : location
         case .ended:
             pressedView.transform = CGAffineTransform(scaleX: 1, y: 1)
             pressedView.alpha = 1
@@ -63,12 +64,16 @@ class ViewController: UIViewController {
         }
     }
     
-    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
-    }
+    var difference: CGPoint!
+    var final: CGPoint!
     
-    func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
-        return sqrt(CGPointDistanceSquared(from: from, to: to))
+    private func avoidCircleMovingIfNoChangeLocation(original: CGPoint, new: CGPoint) -> CGPoint {
+        difference.x = original.x - new.x
+        difference.y = original.y - new.y
+        final.x = difference.x + new.x
+        final.y = difference.y + new.y
+        
+        return final
     }
     
     @objc func handleLongPress(_ longPress: UILongPressGestureRecognizer) {

@@ -53,9 +53,7 @@ class ViewController: UIViewController {
             pressedView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             pressedView.alpha = 0.5
         case .changed:
-            let distance = CGPointDistance(from: location, to: orginalCircleCenter)
-            
-            pressedView.center = CGPoint(x: orginalCircleCenter.x + location.x, y: orginalCircleCenter.y + location.y)
+            pressedView.center = location
         case .ended:
             pressedView.transform = CGAffineTransform(scaleX: 1, y: 1)
             pressedView.alpha = 1
